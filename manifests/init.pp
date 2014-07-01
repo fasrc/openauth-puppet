@@ -87,6 +87,9 @@ class openauth (
   package { 'freeradius':
     ensure => installed,
   }
+  package { 'freeradius-utils':
+    ensure => installed,
+  }
   file { '/etc/raddb/clients.conf':
     content => template('openauth/clients.conf.erb'),
     owner   => 'root',
