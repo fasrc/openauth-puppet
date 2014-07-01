@@ -33,12 +33,18 @@ radacctdir = ${logdir}/radacct
 confdir = ${raddbdir}
 run_dir = ${localstatedir}/run/radiusd
 
-#
-#  The logging messages for the server are appended to the
-#  tail of this file.
-#
-log_file = ${logdir}/radius.log
-log_destination = files
+log syslog {
+	destination = syslog
+	syslog_facility = daemon
+
+	# This seems redundant relative to the log_auth{,_badpass,_goodpass}
+	# configuration far below, but radiusd wasn't syslogging auth
+	# information without it here.
+	auth = yes
+	auth_badpass = yes
+	auth_goodpass = yes
+}
+
 #
 # libdir: Where to find the rlm_* modules.
 #
@@ -230,7 +236,7 @@ listen {
        #       dotted quad (1.2.3.4)
        #       hostname    (radius.example.com)
        #       wildcard    (*)
-       ipaddr = <%= @ipaddress %>
+       ipaddr = *
 
        #  Port on which to listen.
        #  Allowed values are:
