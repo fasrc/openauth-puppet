@@ -188,4 +188,28 @@ class openauth (
       File["${mount_point}/openauth.local/secrets"],
     ],
   }
+
+  # openauth_dummy_secret_codes service to log THIS-IS-A-DUMMY-SECRET codes,
+  # for debugging (to identify users who accepted the default JAuth secret and
+  # did not put in their own).
+  file { '/usr/local/bin/openauth_dummy_secret_codes':
+    source => 'puppet:///modules/openauth/openauth_dummy_secret_codes',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  }
+  file { '/etc/init.d/openauth_dummy_secret_codes':
+    source  => 'puppet:///modules/openauth/openauth_dummy_secret_codes.service',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    require => File['/usr/local/bin/openauth_dummy_secret_codes'],
+  }
+  service { 'openauth_dummy_secret_codes':
+    ensure  => running,
+    enable  => true,
+    require => [
+      File['/etc/init.d/openauth_dummy_secret_codes'],
+    ],
+  }
 }
